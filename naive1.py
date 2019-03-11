@@ -147,7 +147,16 @@ print((1.0*correctrandom)/(correctrandom+wrongrandom))
 print("Most Accuracy is")
 print((1.0*correctmost)/(correctrandom+wrongmost))
 
+#Confusion matrix
 
-#Random Accuracy
+confusionM=[[0]*5]*5
+for x in range(len(predstars)):
+    i=predstars[x]-1
+    j=realstars[x]-1
+    confusionM[i][j] = confusionM[i][j]+1
+print(confusionM)
+
+
+
 
 
