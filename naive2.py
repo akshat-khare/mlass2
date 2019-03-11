@@ -2,26 +2,46 @@ import json
 import numpy as np
 import nltk
 import math
+import random
 from nltk.tokenize import TweetTokenizer
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+stop = set(stopwords.words('english'))
+ps = PorterStemmer()
 read_file = open("ass2data/ass2_data/train.json", "r")
 stararr=[]
 freqarr=[]
 # freqarr is the storage type for frequencies of words
 # textarr=[]
 worddict={}
+# breaker=1
 # worddict gives the direct index in freqarr corresponding to token
 tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
+def tokenmaker(textdata):
+    #assume it is lowercase
+    tokenizedarr = tknzr.tokenize(temptext)
+    # print(tokenizedarr)
+    tokenizedarrstemmed=[]
+    for x in tokenizedarr:
+        tokenizedarrstemmed.append(ps.stem(x))
+    tokenizedarrstemmedstop=[]
+    for x in tokenizedarrstemmed:
+        if x not in stop:
+            tokenizedarrstemmedstop.append(x)
+    return tokenizedarrstemmedstop
+
 loopcount=1
 for line in read_file:
     print("starting loop "+str(loopcount))
     data = json.loads(line)
     tempstars = int(data["stars"])
-    temptext = data["text"]
+    temptext = (data["text"]).lower()
     # print(nltk.word_tokenize(temptext))
     # print(tknzr.tokenize(temptext))
     stararr.append(tempstars)
     # textarr.append(temptext)
-    tokenizedarr = tknzr.tokenize(temptext)
+    tokenizedarr = tokenmaker(temptext)
+    # print(tokenizedarr)
     for x in range(len(tokenizedarr)):
         if (tokenizedarr[x]) in worddict:
             targetindex = worddict[tokenizedarr[x]]+tempstars-1
@@ -36,9 +56,9 @@ for line in read_file:
     print("ending loop "+str(loopcount))
     loopcount+=1
 
-    if(loopcount>2000):
-        print("custombreak")
-        break
+    # if(loopcount>2000):
+    #     print("custombreak")
+    #     break
 
 
 # print(freqarr)
@@ -74,21 +94,36 @@ def predtext(tokenarr,trystar):
     return tempans
 
 predstars=[]
+predstarsrandom=[]
+# predstarsmost=[]
 realstars=[]
 read_filetest = open("ass2data/ass2_data/test.json", "r")
 loopcount=1
+
+def starsmost():
+    tempindex=0
+    temp=freqRev[0]
+    for x in range(5):
+        if(freqRev[x]>temp):
+            temp = freqRev[x]
+            tempindex=x
+    return tempindex
+
+predstarsmostvalue=starsmost()    
+
 for line in read_filetest:
     print("started test loop "+str(loopcount))
     data= json.loads(line)
     realstars.append(int(data["stars"]))
-    temptext = data["text"]
-    tokenizedarr = tknzr.tokenize(temptext)
+    temptext = (data["text"]).lower()
+    tokenizedarr = tokenmaker(temptext)
+    # print(tokenizedarr)
     temppredarr=[]
 
     for x in range(5):
         temppredindi=predtext(tokenizedarr,x+1)
         temppredarr.append(temppredindi)
-    tempmax=temppredarr[0];
+    tempmax=temppredarr[0]
     tempmaxindex=0
     for x in range(5):
         if(temppredarr[x]>tempmax):
@@ -97,22 +132,43 @@ for line in read_filetest:
     print("real is "+str(data["stars"]))
     print("predicted is "+str(tempmaxindex+1))
     predstars.append(tempmaxindex+1)
+    predstarsrandom.append(int(random.randint(0, 5)))
+    # predstarsmost.append(predstarsmostvalue+1)
     print("ending test loop "+str(loopcount))
     loopcount+=1
-    if(loopcount>200):
-        print("custom end to test")
-        break
+    # if(loopcount>200):
+    #     print("custom end to test")
+    #     break
 
 # calculate accuracy
 correct=0
 wrong=0
+correctrandom=0
+wrongrandom=0
+correctmost=0
+wrongmost=0
 for x in range(len(predstars)):
     if(predstars[x]==realstars[x]):
         correct+=1
     else:
         wrong+=1
-print("Accuracy is")
+    if(predstarsrandom[x]==realstars[x]):
+        correctrandom+=1
+    else:
+        wrongrandom+=1
+    if((predstarsmostvalue+1)==realstars[x]):
+        correctmost+=1
+    else:
+        wrongmost+=1
+print("Naive Accuracy is")
 print((1.0*correct)/(correct+wrong))
+print("Random Accuracy is")
+print((1.0*correctrandom)/(correctrandom+wrongrandom))
+print("Most Accuracy is")
+print((1.0*correctmost)/(correctmost+wrongmost))
+print("Most one is "+str(predstarsmostvalue+1))
+
+#Confusion matrix
 
 confusionM=np.zeros((5,5))
 for x in range(len(predstars)):
@@ -123,3 +179,7 @@ for x in range(len(predstars)):
     confusionM[i][j] = confusionM[i][j]+1
     # print(confusionM)
 print(confusionM)
+
+
+
+

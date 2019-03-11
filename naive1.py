@@ -10,6 +10,7 @@ freqarr=[]
 # freqarr is the storage type for frequencies of words
 # textarr=[]
 worddict={}
+# breaker=1
 # worddict gives the direct index in freqarr corresponding to token
 tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
 loopcount=1
@@ -17,7 +18,7 @@ for line in read_file:
     print("starting loop "+str(loopcount))
     data = json.loads(line)
     tempstars = int(data["stars"])
-    temptext = data["text"]
+    temptext = (data["text"]).lower()
     # print(nltk.word_tokenize(temptext))
     # print(tknzr.tokenize(temptext))
     stararr.append(tempstars)
@@ -76,7 +77,7 @@ def predtext(tokenarr,trystar):
 
 predstars=[]
 predstarsrandom=[]
-predstarsmost=[]
+# predstarsmost=[]
 realstars=[]
 read_filetest = open("ass2data/ass2_data/train.json", "r")
 loopcount=1
@@ -96,7 +97,7 @@ for line in read_filetest:
     print("started test loop "+str(loopcount))
     data= json.loads(line)
     realstars.append(int(data["stars"]))
-    temptext = data["text"]
+    temptext = (data["text"]).lower()
     tokenizedarr = tknzr.tokenize(temptext)
     temppredarr=[]
 
@@ -113,7 +114,7 @@ for line in read_filetest:
     print("predicted is "+str(tempmaxindex+1))
     predstars.append(tempmaxindex+1)
     predstarsrandom.append(int(random.randint(0, 5)))
-    predstarsmost.append(predstarsmostvalue+1)
+    # predstarsmost.append(predstarsmostvalue+1)
     print("ending test loop "+str(loopcount))
     loopcount+=1
     # if(loopcount>20):
@@ -136,7 +137,7 @@ for x in range(len(predstars)):
         correctrandom+=1
     else:
         wrongrandom+=1
-    if(predstarsmost[x]==realstars[x]):
+    if((predstarsmostvalue+1)==realstars[x]):
         correctmost+=1
     else:
         wrongmost+=1
@@ -145,17 +146,20 @@ print((1.0*correct)/(correct+wrong))
 print("Random Accuracy is")
 print((1.0*correctrandom)/(correctrandom+wrongrandom))
 print("Most Accuracy is")
-print((1.0*correctmost)/(correctrandom+wrongmost))
+print((1.0*correctmost)/(correctmost+wrongmost))
+print("Most one is "+str(predstarsmostvalue+1))
 
 #Confusion matrix
 
-confusionM=[[0]*5]*5
+confusionM=np.zeros((5,5))
 for x in range(len(predstars)):
     i=predstars[x]-1
     j=realstars[x]-1
+    # print("i is "+str(i))
+    # print("j is "+str(j))
     confusionM[i][j] = confusionM[i][j]+1
+    # print(confusionM)
 print(confusionM)
-
 
 
 
