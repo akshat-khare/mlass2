@@ -3,7 +3,7 @@ import numpy as np
 import nltk
 import math
 from nltk.tokenize import TweetTokenizer
-read_file = open("ass2data/ass2_data/trainfirstline.json", "r")
+read_file = open("ass2data/ass2_data/train.json", "r")
 stararr=[]
 freqarr=[]
 # freqarr is the storage type for frequencies of words
@@ -11,7 +11,9 @@ freqarr=[]
 worddict={}
 # worddict gives the direct index in freqarr corresponding to token
 tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
+loopcount=1
 for line in read_file:
+    print("starting loop "+str(loopcount))
     data = json.loads(line)
     tempstars = int(data["stars"])
     temptext = data["text"]
@@ -31,6 +33,14 @@ for line in read_file:
             freqarr.extend(temparr)
             # print(freqarr)
             worddict[tokenizedarr[x]] = tempindex
+    print("ending loop "+str(loopcount))
+    loopcount+=1
+
+    # if(loopcount>2000):
+    #     print("custombreak")
+    #     break
+
+
 # print(freqarr)
 print(len(freqarr))
 print(len(worddict))
@@ -65,10 +75,12 @@ def predtext(tokenarr,trystar):
 
 predstars=[]
 realstars=[]
-read_filetest = open("ass2data/ass2_data/testfirstline.json", "r")
+read_filetest = open("ass2data/ass2_data/test.json", "r")
+loopcount=1
 for line in read_filetest:
+    print("started test loop "+str(loopcount))
     data= json.loads(line)
-    realstars.append(data["stars"])
+    realstars.append(int(data["stars"]))
     temptext = data["text"]
     tokenizedarr = tknzr.tokenize(temptext)
     temppredarr=[]
@@ -82,10 +94,14 @@ for line in read_filetest:
         if(temppredarr[x]>tempmax):
             tempmaxindex=x
             tempmax = temppredarr[x]
-    print(data["stars"])
-    print(tempmaxindex+1)
+    print("real is "+str(data["stars"]))
+    print("predicted is "+str(tempmaxindex+1))
     predstars.append(tempmaxindex+1)
-
+    print("ending test loop "+str(loopcount))
+    loopcount+=1
+    # if(loopcount>20):
+    #     print("custom end to test")
+    #     break
 
 # calculate accuracy
 correct=0
