@@ -2,6 +2,7 @@ import json
 import numpy as np
 import nltk
 import math
+import random
 from nltk.tokenize import TweetTokenizer
 read_file = open("ass2data/ass2_data/train.json", "r")
 stararr=[]
@@ -74,9 +75,23 @@ def predtext(tokenarr,trystar):
     return tempans
 
 predstars=[]
+predstarsrandom=[]
+predstarsmost=[]
 realstars=[]
 read_filetest = open("ass2data/ass2_data/train.json", "r")
 loopcount=1
+
+def starsmost():
+    tempindex=0
+    temp=freqRev[0]
+    for x in range(5):
+        if(freqRev[x]>temp):
+            temp = freqRev[x]
+            tempindex=x
+    return tempindex
+
+predstarsmostvalue=starsmost()    
+
 for line in read_filetest:
     print("started test loop "+str(loopcount))
     data= json.loads(line)
@@ -88,7 +103,7 @@ for line in read_filetest:
     for x in range(5):
         temppredindi=predtext(tokenizedarr,x+1)
         temppredarr.append(temppredindi)
-    tempmax=temppredarr[0];
+    tempmax=temppredarr[0]
     tempmaxindex=0
     for x in range(5):
         if(temppredarr[x]>tempmax):
@@ -97,6 +112,8 @@ for line in read_filetest:
     print("real is "+str(data["stars"]))
     print("predicted is "+str(tempmaxindex+1))
     predstars.append(tempmaxindex+1)
+    predstarsrandom.append(int(random.randint(0, 5)))
+    predstarsmost.append(predstarsmostvalue+1)
     print("ending test loop "+str(loopcount))
     loopcount+=1
     # if(loopcount>20):
@@ -106,14 +123,31 @@ for line in read_filetest:
 # calculate accuracy
 correct=0
 wrong=0
+correctrandom=0
+wrongrandom=0
+correctmost=0
+wrongmost=0
 for x in range(len(predstars)):
     if(predstars[x]==realstars[x]):
         correct+=1
     else:
         wrong+=1
-print("Accuracy is")
+    if(predstarsrandom[x]==realstars[x]):
+        correctrandom+=1
+    else:
+        wrongrandom+=1
+    if(predstarsmost[x]==realstars[x]):
+        correctmost+=1
+    else:
+        wrongmost+=1
+print("Naive Accuracy is")
 print((1.0*correct)/(correct+wrong))
+print("Random Accuracy is")
+print((1.0*correctrandom)/(correctrandom+wrongrandom))
+print("Most Accuracy is")
+print((1.0*correctmost)/(correctrandom+wrongmost))
 
 
+#Random Accuracy
 
 
