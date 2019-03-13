@@ -6,7 +6,11 @@ import random
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from nltk import ngrams
 stop = set(stopwords.words('english'))
+# add punctuation to stopword
+# print(stop)
+# exit()
 ps = PorterStemmer()
 read_file = open("ass2data/ass2_data/train.json", "r")
 stararr=[]
@@ -14,6 +18,7 @@ freqarr=[]
 # freqarr is the storage type for frequencies of words
 # textarr=[]
 worddict={}
+ngramval=2
 # breaker=1
 # worddict gives the direct index in freqarr corresponding to token
 tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
@@ -28,7 +33,12 @@ def tokenmaker(textdata):
     for x in tokenizedarrstemmed:
         if x not in stop:
             tokenizedarrstemmedstop.append(x)
-    return tokenizedarrstemmedstop
+    tokenizedarrstemmedstopngramtemp = ngrams(tokenizedarrstemmedstop,ngramval)
+    tokenizedarrstemmedstopngram=[]
+    for grams in tokenizedarrstemmedstopngramtemp:
+        tokenizedarrstemmedstopngram.append(' '.join(grams))
+    # print(tokenizedarrstemmedstopngram)
+    return tokenizedarrstemmedstopngram
 
 loopcount=1
 for line in read_file:
@@ -56,9 +66,9 @@ for line in read_file:
     print("ending loop "+str(loopcount))
     loopcount+=1
 
-    if(loopcount>2000):
-        print("custombreak")
-        break
+    # if(loopcount>2000):
+    #     print("custombreak")
+    #     break
 
 
 # print(freqarr)
@@ -136,9 +146,9 @@ for line in read_filetest:
     # predstarsmost.append(predstarsmostvalue+1)
     print("ending test loop "+str(loopcount))
     loopcount+=1
-    if(loopcount>200):
-        print("custom end to test")
-        break
+    # if(loopcount>200):
+    #     print("custom end to test")
+    #     break
 
 # calculate accuracy
 correct=0
@@ -197,8 +207,6 @@ print("F1 array is ")
 print(indifarr)
 print("Average F1 score is ")
 print(indif1)
-
-
 
 
 
