@@ -12,7 +12,7 @@ stop = set(stopwords.words('english'))
 # print(stop)
 # exit()
 ps = PorterStemmer()
-read_file = open("ass2data/ass2_data/train.json", "r")
+read_file = open("ass2data/ass2_data/train_full.json", "r")
 stararr=[]
 freqarr=[]
 # freqarr is the storage type for frequencies of words
