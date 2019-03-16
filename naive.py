@@ -2,10 +2,12 @@ import json
 import numpy as np
 import nltk
 import math
+import sys
 from nltk.tokenize import TweetTokenizer
-read_file = open("ass2data/ass2_data/train.json", "r")
+read_file = open(sys.argv[1], "r")
 stararr=[]
 freqarr=[]
+debug=False
 # freqarr is the storage type for frequencies of words
 # textarr=[]
 worddict={}
@@ -13,7 +15,7 @@ worddict={}
 tknzr = TweetTokenizer(strip_handles=True, reduce_len=True)
 loopcount=1
 for line in read_file:
-    print("starting loop "+str(loopcount))
+    if(debug): print("starting loop "+str(loopcount))
     data = json.loads(line)
     tempstars = int(data["stars"])
     temptext = data["text"]
@@ -33,17 +35,17 @@ for line in read_file:
             freqarr.extend(temparr)
             # print(freqarr)
             worddict[tokenizedarr[x]] = tempindex
-    print("ending loop "+str(loopcount))
+    if(debug): print("ending loop "+str(loopcount))
     loopcount+=1
 
-    # if(loopcount>2000):
-    #     print("custombreak")
-    #     break
+    if(loopcount>2000):
+        print("custombreak")
+        break
 
 
 # print(freqarr)
-print(len(freqarr))
-print(len(worddict))
+if(debug): print(len(freqarr))
+if(debug): print(len(worddict))
 # print(worddict)
 # for x,y in worddict.items():
 #     print(x)
@@ -52,7 +54,7 @@ totalfreq=[0,0,0,0,0]
 for x in range(int(len(freqarr)/5)):
     for y in range(5):
         totalfreq[y]=totalfreq[y] + freqarr[5*x+y]
-print(totalfreq)
+if(debug): print(totalfreq)
 
 freqRev = [0,0,0,0,0]
 for rev in stararr:
@@ -75,10 +77,10 @@ def predtext(tokenarr,trystar):
 
 predstars=[]
 realstars=[]
-read_filetest = open("ass2data/ass2_data/train.json", "r")
+read_filetest = open(sys.argv[2], "r")
 loopcount=1
 for line in read_filetest:
-    print("started test loop "+str(loopcount))
+    if(debug): print("started test loop "+str(loopcount))
     data= json.loads(line)
     realstars.append(int(data["stars"]))
     temptext = data["text"]
@@ -94,14 +96,14 @@ for line in read_filetest:
         if(temppredarr[x]>tempmax):
             tempmaxindex=x
             tempmax = temppredarr[x]
-    print("real is "+str(data["stars"]))
-    print("predicted is "+str(tempmaxindex+1))
+    if(debug): print("real is "+str(data["stars"]))
+    if(debug): print("predicted is "+str(tempmaxindex+1))
     predstars.append(tempmaxindex+1)
-    print("ending test loop "+str(loopcount))
+    if(debug): print("ending test loop "+str(loopcount))
     loopcount+=1
-    # if(loopcount>20):
-    #     print("custom end to test")
-    #     break
+    if(loopcount>20):
+        print("custom end to test")
+        break
 
 # calculate accuracy
 correct=0
