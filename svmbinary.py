@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[25]:
+# In[1]:
 
 
 import numpy as np
+import time
 from cvxopt import matrix, solvers
-considerata=3
+import sys
+considerata=5
 C=1.0
-read_file = open("ass2data/mnist/train.csv", "r")
+read_file = open(sys.argv[1], "r")
 lenlinarr=28*28+1
 xarr=[]
 yarr=[]
 numtrain=0
 debugcvx=False
+trainingtime=0.0
 for line in read_file:
     linearr=line.split(',')
     tempyi=int(linearr[lenlinarr-1])
@@ -32,8 +35,8 @@ for line in read_file:
         yarr.append(tempyi)
         # print(xarr)
         numtrain+=1
-#         if(numtrain>20):
-#             break
+        if(numtrain>20):
+            break
 xarr = np.array(xarr)
 # yarr = np.array(yarr)
 # print(xarr[0])
@@ -47,8 +50,8 @@ P= np.matmul(np.matmul(yarrsq,np.matmul(xarr, np.transpose(xarr))),yarrsq)
 # for x in range(numtrain):
 #     for y in range(numtrain):
 #         P[x][y] = (yarr[x])*(yarr[y])*(np.dot(xarr[x],xarr[y]))
-print("p shape is ")
-print(P.shape)
+# print("p shape is ")
+# print(P.shape)
 P=matrix(P)
 if(debugcvx): print(P)
 q=np.zeros((numtrain,1))
@@ -79,20 +82,26 @@ b=matrix(0.0)
 if(debugcvx): print(b)
     
 
+starttime = time.time()
 sol= solvers.qp(P,q,G,h,A,b)
 # print(sol['x'])
 alpha=np.array(sol['x'])
+xarrsupport=[]
 if(debugcvx): print(alpha)
 warr=np.zeros((1,28*28))
 for x in range(numtrain):
     # print(xarr[x])
+    if(alpha[x][0]>pow(10,-4)):
+        xarrsupport.append(xarr[x])
     warr = warr + (alpha[x][0])*(yarr[x])*(xarr[x])
     # print(warr)
-# warr=np.transpose(warr)
-# print(warr)
+
 tempbmax=float('-inf')
 tempbmin=float('inf')
 for x in range(numtrain):
+#     print("warr and xarr shape are")
+#     print(warr.shape)
+#     print(xarr[x].shape)
     temp = float(np.dot(warr,xarr[x]))
     # print("tempdot is")
     # print(temp)
@@ -103,8 +112,23 @@ for x in range(numtrain):
         if(temp<tempbmin):
             tempbmin=temp
 bvalue = -(tempbmax+tempbmin)*0.5
-# print("b is")
-# print(bvalue)
+endtime=time.time()
+print("Training time is")
+print(endtime-starttime)
+writefile= open("svmbinarysupportvector.txt","w+")
+writefile.write(str(xarrsupport))
+# print("support vectors are")
+# xarrsupport=np.array(xarrsupport)
+# print(xarrsupport)
+print("number of support vector vs total vectors")
+print(len(xarrsupport))
+print(numtrain)
+writefile= open("svmbinaryw.txt","w+")
+writefile.write(str(warr))
+# warr=np.transpose(warr)
+# print(warr.shape)
+print("b is")
+print(bvalue)
 def findy(xtest):
     temp=0.0
     for x in range(numtrain):
@@ -117,7 +141,7 @@ def findy(xtest):
     else:
         return -1.0
 preddigit=[]
-read_file = open("ass2data/mnist/test.csv", "r")
+read_file = open(sys.argv[2], "r")
 count=0
 numtest=0
 yarrtest=[]
@@ -151,8 +175,8 @@ for line in read_file:
         else:
             print(str(wrong)+" wrong in "+str(numtest)+" steps")
             wrong+=1
-#         if(numtest>2):
-#             break
+        if(numtest>2):
+            break
 xarrtest=np.array(xarrtest)
 # yarrtest=np.array(yarrtest).reshape(numtest,1)
 # yarrnp= np.array(yarr).reshape(numtrain,1)
@@ -160,7 +184,7 @@ print("Accuracy is")
 print((1.0*correct)/(correct+wrong))
 
 
-# In[26]:
+# In[2]:
 
 
 gammagaussian=0.05
@@ -189,11 +213,12 @@ def findPGaussian():
     return tempwhole
 P=matrix(findPGaussian())
 # print(P)
+starttime=time.time()
 sol= solvers.qp(P,q,G,h,A,b)
 # print(sol['x'])
 alpha=np.array(sol['x'])
 if(debugcvx): print(alpha)
-warr=np.zeros((1,28*28))
+# warr=np.zeros((1,28*28))
 # for x in range(numtrain):
 #     # print(xarr[x])
 #     warr = warr + (alpha[x][0])*(yarr[x])*(xarr[x])
@@ -255,6 +280,8 @@ def findygaussian(xarrargg,xarrtestargg,numtrainarg,numtestarg,yarrargg,alphaarg
     return temp4
 
 # Lets find b
+write_file= open("svmbinarysupportgaussian.txt", "w+")
+
 def findbgauss():
     xarrsupport=[]
     yarrsupport=[]
@@ -269,6 +296,7 @@ def findbgauss():
 #             if(numsupport>1):
 #                 break
     print("numsupport vector is "+str(numsupport)+" numtrain is "+str(numtrain))
+    write_file.write(str(xarrsupport))
     xarrsupport=np.array(xarrsupport)
     alphasupport=np.transpose(np.array(alphasupport).reshape((1,numsupport)))
     kernalans = findygaussian(xarrsupport,xarrsupport,numsupport,numsupport,yarrsupport,alphasupport)
@@ -280,6 +308,9 @@ def findbgauss():
     temp=temp/numsupport
     return temp
 bvalue=findbgauss()
+endtime= time.time()
+print("Training time is")
+print(endtime-starttime)
 print("b is ")
 print(bvalue)
 ypredgaussian = findygaussian(xarr,xarrtest,numtrain,numtest,yarr,alpha) + bvalue
@@ -299,7 +330,7 @@ print("Accuracy is")
 print((1.0*correct)/(correct+wrong))
 
 
-# In[30]:
+# In[3]:
 
 
 from svmutil import *
@@ -310,18 +341,43 @@ prob = svm_problem(yarr, xarr)
 param = svm_parameter('-s 0 -c 1.0 -t 0')
 # param = svm_parameter('-s 0 -c 1.0 -t 2 -g 0.05')
 
+starttime=time.time()
+m=svm_train(prob, param)
+endtime=time.time()
+print("Traintime is")
+print(endtime-starttime)
+# print("nsv")
+# print(len(m.nSV))
+# print(type(m.nSV))
+
+predy = svm_predict(yarrtest,xarrtest,m)
+
+# param = svm_parameter('-s 0 -c 1.0 -t 0')
+param = svm_parameter('-s 0 -c 1.0 -t 2 -g 0.05')
+
+starttime=time.time()
+
 m=svm_train(prob, param)
 
-# m.predict(xarrtest[0])
-correct=0
-wrong=0
-for x in range(numtest):
-    predy = m.predict(xarrtest[x])
-    if(predy==yarrtest[x]):
-        correct+=1
-    else:
-        wrong+=1
+endtime=time.time()
+print("Traintime is")
+print(endtime-starttime)
+# print("nsv")
+# print(m.nSV)
+# print(type(m.nSV))
 
-print("Accuracy is")
-print((1.0*correct)/(correct+wrong))
+predy = svm_predict(yarrtest,xarrtest,m)
+
+# m.predict(xarrtest[0])
+# correct=0
+# wrong=0
+# for x in range(numtest):
+#     predy = m.predict(xarrtest[x])
+#     if(predy==yarrtest[x]):
+#         correct+=1
+#     else:
+#         wrong+=1
+
+# print("Accuracy is")
+# print((1.0*correct)/(correct+wrong))
 

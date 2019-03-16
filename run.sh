@@ -17,11 +17,11 @@ if [[ $1 == 1 ]]; then
 elif [[ $1 == 2 ]]; then
 	if [[ $4 == 0 ]]; then
 		if [[ $5 == "a" ]]; then
-			python part1a.py $2 $3 
+			python svmbinary1.py $2 $3 
 		elif [[ $5 == "b" ]]; then
-			python part1b.py $2 $3 
+			python svmbinary2.py $2 $3 
 		elif [[ $5 == "c" ]]; then
-			python part1c.py $2 $3 
+			python svmbinary3.py $2 $3 
 		fi
 	elif [[ $4 == 1 ]]; then
 		if [[ $5 == "a" ]]; then
