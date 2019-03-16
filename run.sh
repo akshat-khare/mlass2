@@ -25,13 +25,13 @@ elif [[ $1 == 2 ]]; then
 		fi
 	elif [[ $4 == 1 ]]; then
 		if [[ $5 == "a" ]]; then
-			python part2a.py $2 $3 
+			python svmmulticlass1.py $2 $3 
 		elif [[ $5 == "b" ]]; then
-			python part2b.py $2 $3 
+			python svmmulticlass2.py $2 $3 
 		elif [[ $5 == "c" ]]; then
-			python part2a.py $2 $3 
+			python svmmulticlass1.py $2 $3 
 		elif [[ $5 == "d" ]]; then
-			python part2d.py $2 $3 
+			python svmmulticlass3.py $2 $3 
 		fi
 	fi
 fi

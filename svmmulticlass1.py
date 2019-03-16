@@ -53,6 +53,8 @@ for line in read_file:
         numtrainclass[classindex] = numtrainclass[classindex] +1
     
     numtrainall+=1
+    if(numtrainall>200):
+        break
 
 
 # In[2]:
@@ -113,9 +115,9 @@ for x in range(10):
         sol= solvers.qp(P,q,G,h,A,b)
         alpha=np.array(sol['x'])
         alphaclass.append(alpha)
-        print(alpha.shape)
+        # print(alpha.shape)
         
-print(alphaclass)
+# print(alphaclass)
 
 
 # In[3]:
@@ -207,13 +209,13 @@ for x in range(10):
         classindex = classtoindex[10*x+y]
         numtrainthis =numtrainclass[classindex]
         print("x is "+str(x)+" y is "+str(y))
-        print(alphaclass[classindex])
+        # print(alphaclass[classindex])
         tempb = findbgauss(alphaclass[classindex], numtrainclass[classindex], xarrclass[classindex], yarrclass[classindex])
         bclass[classindex]=tempb
 endtime=time.time()
 print("Training time is")
 print(endtime-starttime)
-print(bclass)
+# print(bclass)
 
 
 # In[4]:
@@ -236,6 +238,8 @@ for line in read_file:
     xarrtestall.append(tempxi)
     yarrtestall.append(tempyi)
     numtestall+=1
+    if(numtestall>20):
+        break
 
 
 # In[5]:
@@ -245,7 +249,7 @@ for x in range(10):
     for y in range(10):
         if(x>=y):
             continue
-        print("x is "+str(x)+ " y is "+str(y))
+        # print("x is "+str(x)+ " y is "+str(y))
         classindex = classtoindex[10*x+y]
 #         print(xarrclass[classindex])
 #         print()
@@ -285,7 +289,7 @@ for testiter in range(numtestall):
             maxwin=numwins[x]
             scoreofmaxwin = scorearr[x]
     ypredfin.append(maxwinindex)
-print(ypredfin)
+# print(ypredfin)
 
 
 # In[6]:
@@ -294,7 +298,7 @@ print(ypredfin)
 correct=0
 wrong=0
 for testiter in range(numtestall):
-    print(str(ypredfin[testiter])+ " " + str(yarrtestall[testiter]))
+    # print(str(ypredfin[testiter])+ " " + str(yarrtestall[testiter]))
     if(ypredfin[testiter]==yarrtestall[testiter]):
         correct+=1
     else:
@@ -317,66 +321,4 @@ for x in range(numtestall):
     confusionM[i][j] = confusionM[i][j]+1
     # print(confusionM)
 print(confusionM.astype(int))
-
-
-# In[8]:
-
-
-from svmutil import *
-# svm_model.predict = lambda self, x: svm_predict([0], [x], self)[0][0]
-
-prob = svm_problem(yarrall, xarrall)
-
-# param = svm_parameter('-s 0 -c 1.0 -t 0')
-param = svm_parameter('-s 0 -c 1.0 -t 2 -g 0.05')
-
-starttime=time.time()
-m=svm_train(prob, param)
-endtime=time.time()
-print("Train time is")
-print(endtime-starttime)
-# m.predict(xarrtest[0])
-predy = svm_predict(yarrtestall,xarrtestall,m)
-
-
-# In[9]:
-
-
-from random import shuffle
-from svmutil import *
-percentvali = 2000
-xarrtrainall = []
-yarrtrainall = []
-xarrvalidationall = []
-yarrvalidationall = []
-randomarr = list(range(0,numtrainall))
-shuffle(randomarr)
-randomarr = randomarr[:percentvali]
-for x in randomarr:
-    xarrvalidationall.append(xarrall[x])
-    yarrvalidationall.append(yarrall[x])
-    
-for x in range(numtrainall):
-    if(x not in randomarr):
-        xarrtrainall.append(xarrall[x])
-        yarrtrainall.append(yarrall[x])
-carr = [0.00001, 0.001, 1, 5, 10]
-print("xtrainalllength " + str(len(xarrtrainall)))
-print("ytrainalllength " + str(len(yarrtrainall)))
-print("xvalialllength " + str(len(xarrvalidationall)))
-print("yvalinalllength " + str(len(yarrvalidationall)))
-prob = svm_problem(yarrtrainall, xarrtrainall)
-for x in range(5):
-    print("lets see")
-    print(carr[x])
-    # param = svm_parameter('-s 0 -c 1.0 -t 0')
-    paramstr = '-s 0 -c '+str(carr[x])+' -t 2 -g 0.05'
-    print(paramstr)
-    param = svm_parameter(paramstr)
-
-    m=svm_train(prob, param)
-
-    # m.predict(xarrtest[0])
-    predy1 = svm_predict(yarrvalidationall, xarrvalidationall, m)
-    predy2 = svm_predict(yarrtestall,xarrtestall,m)
 

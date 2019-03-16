@@ -39,7 +39,7 @@ for line in read_file:
         #     break
 xarr = np.array(xarr)
 
-
+read_file = open(sys.argv[2], "r")
 numtest=0
 yarrtest=[]
 xarrtest=[]

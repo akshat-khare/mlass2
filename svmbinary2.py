@@ -87,6 +87,7 @@ if(debugcvx): print(b)
 numtest=0
 yarrtest=[]
 xarrtest=[]
+read_file = open(sys.argv[2], "r")
 for line in read_file:
     linearr=line.split(',')
     tempyi=int(linearr[lenlinarr-1])
