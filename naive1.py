@@ -40,9 +40,9 @@ for line in read_file:
     if(debug): print("ending loop "+str(loopcount))
     loopcount+=1
 
-    if(loopcount>2000):
-        print("custombreak")
-        break
+    # if(loopcount>2000):
+    #     print("custombreak")
+    #     break
 
 
 # print(freqarr)
@@ -119,9 +119,9 @@ for line in read_filetest:
     # predstarsmost.append(predstarsmostvalue+1)
     if(debug): print("ending test loop "+str(loopcount))
     loopcount+=1
-    if(loopcount>20):
-        print("custom end to test")
-        break
+    # if(loopcount>20):
+    #     print("custom end to test")
+    #     break
 
 # calculate accuracy
 correct=0

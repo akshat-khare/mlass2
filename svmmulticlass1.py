@@ -53,8 +53,8 @@ for line in read_file:
         numtrainclass[classindex] = numtrainclass[classindex] +1
     
     numtrainall+=1
-    if(numtrainall>200):
-        break
+    # if(numtrainall>200):
+    #     break
 
 
 # In[2]:
@@ -238,8 +238,8 @@ for line in read_file:
     xarrtestall.append(tempxi)
     yarrtestall.append(tempyi)
     numtestall+=1
-    if(numtestall>20):
-        break
+    # if(numtestall>20):
+    #     break
 
 
 # In[5]:
