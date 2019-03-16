@@ -1,0 +1,115 @@
+\documentclass[10pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\graphicspath{ {./} }
+\usepackage{listings}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+\addtolength{\oddsidemargin}{-.875in}
+	\addtolength{\evensidemargin}{-.875in}
+	\addtolength{\textwidth}{1.75in}
+
+	\addtolength{\topmargin}{-.875in}
+	\addtolength{\textheight}{1.75in}
+\renewcommand{\baselinestretch}{0.97}
+\title{Assignment 2}
+\author {Akshat Khare, 2016CS10315}
+
+\date{March 11, 2019}
+\begin{document}
+
+\maketitle
+
+\section{Text Classification: Naive Bayes}
+\subsection{a}
+Accuracy over test set: 60.9\% \\
+Accuracy over training set: 64.4\% \\ 
+\subsection{b}
+
+\subsubsection{Random Accuracy}
+Test data: 16.82\% \\ 
+Train data: 16.69\% \\ 
+\subsubsection{Most occuring based classification accurace}
+Test data: 43.98\% \\
+Train data: 43.88\% \\
+\subsubsection{Improvement over Random based}
+Test data: 44.08\% \\
+Train data: 47.71\% \\
+\subsubsection{Improvement over Most occuring based}
+Test data: 16.92\% \\
+Train data: 20.52\% \\
+\subsection{c}
+Test data confusion matrix: \\
+\begin{lstlisting}
+[[14494.  2867.  1371.  1094.  3081.]
+ [ 3609.  3201.  1640.   655.   280.]
+ [ 1149.  3368.  5283.  2459.   548.]
+ [  496.  1039.  5344. 17712. 14067.]
+ [  421.   363.   893.  7438. 40846.]]
+\end{lstlisting}
+Five stars rating has the most value (40846) of diagonal entry.\\
+This means that five star is class which has most number of reviews which have been predicted correctly, i.e., it has most number of true positives.\\
+We can see that one stars and five stars review have been classified most successfully as their diagonal entries are much more than corresponding non-diagonal entries.\\
+Two stars and three stars have been poorly classified as their true positives can't overpower the false positives and true negatives. Four stars have mediocre performance.\\
+So we can observe that five star reviews occur in majority and hence the previous observation of high most occurring based accuracy of 43.98\% occurs due to this reason. We can also observe that people vote majorly on extremes and the classification works good on extremes. Confusion matrix is hence a good measure of judging performance of the classifier.\\
+\subsection{d}
+Test data accuracy: 60.76\%\\
+We see that applying stop word removal and stemming we in fact see a decrease in observed accuracy over test data.\\
+Time taken significantly increased to 1.5 hour.\\
+The confusion matrix obtained was:\\
+\begin{lstlisting}
+[[14522.  2980.  1484.  1197.  3063.]
+ [ 3512.  3100.  1569.   613.   269.]
+ [ 1073.  3121.  5089.  2406.   589.]
+ [  514.  1157.  5265. 17110. 13474.]
+ [  548.   480.  1124.  8032. 41427.]]
+\end{lstlisting}
+So we in fact observed a decrease in accuracy due reasons like presence of many words which were important to classify by stop words and changing of important words by stemming.\\
+\subsection{e}
+Applying bi-grams helping in increasing accuracy.\\
+Test data accuracy: 63.97\%\\
+Improvent over part $a$ is 3.07\%\\
+Improvement over part $d$ is 3.21\%\\
+So we can say that bigrams helped in improving overall accuracy.\\
+The obtained confusion matrix was:\\
+\begin{lstlisting}
+[[16716.  4037.  1627.   736.  1201.]
+ [  907.   956.   289.    63.    65.]
+ [  750.  1935.  2115.   518.   160.]
+ [ 1218.  3329.  9049. 17625.  9268.]
+ [  578.   581.  1451. 10416. 48128.]]
+\end{lstlisting}
+So we can see that both 
+%%% Fill in your content here.
+\subsection{Keys and FDs}
+%%% Fill in your content here.
+\subsection{Sample Data}
+%%% Fill in your content here.
+\subsection{List of various relationships}
+%%% Fill in your content here.
+
+\section{Answer 2}
+%%% Fill in your content here.
+
+\section{Answer 3}
+\subsection{Schema}
+%%% Fill in your content here.
+\subsection{Various insert modes}
+%%% Fill in your content here.
+\subsubsection{Bulk Load}
+%%% Fill in your content here.
+\subsubsection{Insert statements}
+%%% Fill in your content here.
+\subsubsection{using JDBC}
+%%% Fill in your content here.
+\subsection{Statistics}
+%%% Fill in your content here.
+
+\section{Answer 4}
+%%% Fill in your content here.
+
+\end{document}
+

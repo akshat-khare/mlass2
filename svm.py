@@ -25,17 +25,21 @@ for line in read_file:
         yarr.append(tempyi)
         # print(xarr)
         numtrain+=1
-        if(numtrain>2):
-            break
+        # if(numtrain>20):
+        #     break
 xarr = np.array(xarr)
 # yarr = np.array(yarr)
 # print(xarr[0])
 # print(xarr.shape)
 # print(yarr.shape)
-P=np.zeros((numtrain,numtrain))
+yarrsq=np.zeros((numtrain,numtrain))
 for x in range(numtrain):
-    for y in range(numtrain):
-        P[x][y] = (yarr[x])*(yarr[y])*(np.dot(xarr[x],xarr[y]))
+    yarrsq[x][x]=yarr[x]
+P= np.matmul(np.matmul(yarrsq,np.matmul(xarr, np.transpose(xarr))),yarrsq)
+# P=np.zeros((numtrain,numtrain))
+# for x in range(numtrain):
+#     for y in range(numtrain):
+#         P[x][y] = (yarr[x])*(yarr[y])*(np.dot(xarr[x],xarr[y]))
 P=matrix(P)
 if(debugcvx): print(P)
 q=np.zeros((numtrain,1))
@@ -93,9 +97,54 @@ def findy(xtest):
     for x in range(numtrain):
         if(alpha[x][0]==0):
             continue
-        temp+= (alpha[x][0])*(yarr[x])*(float(np.dot(xtext,xarr[x])))
+        temp+= (alpha[x][0])*(yarr[x])*(float(np.dot(xtest,xarr[x])))
     temp+=bvalue
     if(temp>=0):
         return 1.0
     else:
         return -1.0
+preddigit=[]
+read_file = open("ass2data/mnist/test.csv", "r")
+count=0
+numtest=0
+# yarrtest=[]
+correct=0
+wrong=0
+for line in read_file:
+    linearr=line.split(',')
+    tempyi=int(linearr[lenlinarr-1])
+    # print(tempyi)
+    if(tempyi==considerata or tempyi==considerata+1):
+        # print(tempyi)
+        tempxi= []
+        for x in range(28*28):
+            tempxi.append(1.0*int(linearr[x])/255)
+        # print(tempxi)
+        # xarr.append(tempxi)
+        if(tempyi==considerata+1):
+            tempyi=1.0
+        else:
+            tempyi=-1.0
+        # yarrtest.append(tempyi)
+        # print(xarr)
+
+        numtest+=1
+        temppredy = findy(np.array(tempxi))
+        # print("pred is "+str(temppredy))
+        # print("real is "+str(tempyi))
+        if(temppredy==tempyi):
+            correct+=1
+        else:
+            print(str(wrong)+" wrong in "+str(numtest)+" steps")
+            wrong+=1
+        # if(numtest>2):
+        #     break
+print("Accuracy is")
+print((1.0*correct)/(correct+wrong))
+def findPGaussian():
+    tempxirow = np.sum(np.multiply(xarr,xarr),axis=1).reshape((numtrain,1))
+    tempwhole = tempxirow + np.transpose(tempxirow) + ((-2)*(np.dot(xarr,np.transpose(xarr))))
+    tempwhole = np.matmul(np.matmul(yarrsq,tempwhole),yarrsq)
+    return tempwhole
+P=matrix(findPGaussian())
+

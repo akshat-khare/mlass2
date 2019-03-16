@@ -1,10 +1,10 @@
-from nltk import ngrams
-
-sentence = 'this is a foo bar sentences and i want to ngramize it'
-
-n = 6
-sixgrams = ngrams(sentence.split(), n)
-ansgrams=[]
-for grams in sixgrams:
-    ansgrams.append(' '.join(grams))
-print(ansgrams)
+$f1$ for 1\\
+0.7878465312167353\\
+$f1$ for 2\\
+0.5115202037744587
+$f1$ for 3\\
+0.581826794031736
+$f1$ for 4\\
+0.6559543746888155\\
+$f1$ for 5\\
+0.8477218537304374\\
