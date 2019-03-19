@@ -86,14 +86,14 @@ for line in read_file:
 
 from random import shuffle
 from svmutil import *
-percentvali = 2000
+percentvali = 10
 xarrtrainall = []
 yarrtrainall = []
 xarrvalidationall = []
 yarrvalidationall = []
 randomarr = list(range(0,numtrainall))
 shuffle(randomarr)
-randomarr = randomarr[:percentvali]
+randomarr = randomarr[:int(numtrainall*0.01* percentvali)]
 for x in randomarr:
     xarrvalidationall.append(xarrall[x])
     yarrvalidationall.append(yarrall[x])
